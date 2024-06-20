@@ -1,11 +1,14 @@
 ﻿<style>
-   heading { color: forestgreen }
+   h1 { color: forestgreen }
+   h2 { color: forestgreen }
+   h3 { color: forestgreen }
+   h4 { color: forestgreen }
    notes { color: darkcyan }
    keyword { color: dodgerblue }
    name { color: salmon }
 </style>
 
-# <heading>The ***BasicIoC*** Class Library</heading>
+# The ***BasicIoC*** Class Library
 <!--TOC-->
   - [Overview](#overview)
     - [Thread Safety](#thread-safety)
@@ -23,24 +26,24 @@
     - [Making Internals Visible to the Test Project](#making-internals-visible-to-the-test-project)
     - [The ***MyLogger*** Class](#the-mylogger-class)
     - [The ***MyClass1*** Class](#the-myclass1-class)
-    - [The ***MyClass2*** Class>](#the-myclass2-class)
+    - [The ***MyClass2*** Class](#the-myclass2-class)
     - [The ***ServiceLocater*** Class](#the-servicelocater-class)
     - [The Unit Test Project](#the-unit-test-project)
   - [End of README file](#end-of-readme-file)
 <!--/TOC-->
-## <heading>Overview</heading>
+## Overview
 ***BasicIoC*** is a small class library that implements a simple Inversion of Control (IoC) container. Dependencies can be registered with the
 container. The container can then be used to resolve dependencies and return an instance of the resolving type. Dependencies can be registered
 as "*prototypes*" where each call to resolve the dependency returns a new instance of the resolving type, or as "*singletons*" where each call
 to resolve the dependency returns the same instance of the resolving type. An optional resolving key value can be used in situations where more
 than one resolving type needs to be registered with the same dependency type.
 
-### <heading>Thread Safety</heading>
+### Thread Safety
 Every effort has been made to make the ***BasicIoC*** class library thread safe. Each section of code in the library that updates or retrieves
 internal state is wrapped in a <keyword>*lock*</keyword> block to prevent concurrent thread access to the data. The <name>***Container***</name>
 class itself is a singleton class that implements the ***<name>Lazy</name>\<<name>T</name>>*** class to ensure thread safety.
 
-## <heading>The ***IContainer*** Interface</heading>
+## The ***IContainer*** Interface
 The ***BasicIoC*** class library defines a single interface named <name>***IContainer***</name>. This interface contains only three methods:
 - ***<name>RegisterPrototype</name>\<<name>TDependencyType</name>, <name>TResolvingType</name>>(<keyword>string</keyword>? <name>key</name> = <keyword>null</keyword>)***
 - ***<name>RegisterSingleton</name>\<<name>TDependencyType</name>, <name>TResolvingType</name>>(<keyword>string</keyword>? <name>key</name> = <keyword>null</keyword>)***
@@ -48,11 +51,11 @@ The ***BasicIoC*** class library defines a single interface named <name>***ICont
 
 These methods will be described in detail in the next section that covers the <name>***Container***</name> class.
 
-## <heading>The ***Container*** Class</heading>
+## The ***Container*** Class
 The <name>***Container***</name> class is the only public class accessible in the ***BasicIoC*** class library. The <name>***Container***</name>
 class implements the <name>***IContainer***</name> interface. The class consists of one static property and three methods which are described below.
 
-### <heading>The ***Instance*** Property</heading>
+### The ***Instance*** Property
 The <name>***Instance***</name> property is a static property of the <name>***Container***</name> class. This property returns an instance of the
 <name>***Container***</name> class. Since the <name>***Container***</name> class implements the *singleton* pattern, every call to the
 <name>***Instance***</name> property returns the same instance of the <name>***Container***</name> class. Internally, the
@@ -71,7 +74,7 @@ Here's an example of calling the <name>***Instance***</name> property:
 IContainer container = Container.Instance;
 ```
 
-### <heading>The ***RegisterPrototype*** Method</heading>
+### The ***RegisterPrototype*** Method
 The <name>***RegisterPrototype***</name> method is used to register a dependency that should return a new instance of the resolving type every
 time the dependency is resolved. The method has the following definition:
 
@@ -82,7 +85,7 @@ void RegisterPrototype<TDependencyType, TResolvingType>(string? key = null)
 ```
 
 <name>***TDependencyType***</name> specifies the <keyword>*Type*</keyword> of the dependency. This will typically be an interface name or a base
-class name. The <name>***DependencyType***</name> cannot be a <keyword>*struct*</keyword> or other value type. It must be a
+class name. The <name>***TDependencyType***</name> cannot be a <keyword>*struct*</keyword> or other value type. It must be a
 <keyword>*class*</keyword> type.
 
 <name>***TResolvingType***</name> specifies the <keyword>*Type*</keyword> of object that should be returned when the dependency is resolved.
@@ -111,7 +114,7 @@ IContainer container = Container.Instance;
 container.RegisterPrototype<ILogger, Logger>();
 ```
 
-### <heading>The ***RegisterSingleton*** Method</heading>
+### The ***RegisterSingleton*** Method
 The <name>***RegisterSingleton***</name> method is used to register a dependency that should return the same instance of the resolving type every
 time the dependency is resolved. The method has the following definition:
 
@@ -141,7 +144,7 @@ container.RegisterPrototype<ISampleClass, SampleClass>();
 container.RegisterSingleton<ISampleClass, SampleClass>(resolvingKey);
 ```
 
-### <heading>The ***ResolveDependency*** Method</heading>
+### The ***ResolveDependency*** Method
 The <name>***ResolveDependency***</name> method is used to resolve dependencies that have previously been registered by the
 <name>***RegisterPrototype***</name> or <name>***RegisterSingleton***</name> methods described above. The method has the following definition:
 
@@ -178,7 +181,7 @@ instance. It will then return that instance to the caller. On the second and sub
 that same instance. In other words, a new instance of the resolving type is created only on the first call to <name>***ResolveDependency***</name>
 for any given dependency type.
 
-## <heading>Using the ***BasicIoC*** Class</heading>
+## Using the ***BasicIoC*** Class
 This section provides an example showing the typical usage of the ***BasicIoC*** class. The example assumes a project that contains the following
 classes:
 
@@ -230,10 +233,10 @@ public class MyClass2 : IClass2
 }
 ```
 
-Notice in the above example that the dependencies are represented by read-only properties. We want the BasicIoC container to initialize these
-dependency properties with the appropriate class instances. This will be worked out in the following sections of this document.
+Notice in the above example that the dependencies are represented by read-only properties. We want the ***BasicIoC*** container to initialize
+these dependency properties with the appropriate resolving class instances. This will be worked out in the following sections of this document.
 
-### <heading>The ***ServiceLocater*** Class</heading>
+### The ***ServiceLocater*** Class
 We need a singleton class to encapsulate the ***BasicIoC*** <name>***Container***</name> class. This singleton class is where we will register
 all of our dependencies. It will also provide a method for resolving the dependencies. This singleton class must be made available to all classes
 in our project where we want to be able to resolve dependencies. The following code shows one such implementation of this class.
@@ -241,7 +244,7 @@ in our project where we want to be able to resolve dependencies. The following c
 ```csharp
 public interface IServiceLocater
 {
-    T? Get<T>(string? key = null);
+    T? Get<T>(string? key = null) where T : class;
 }
 
 public class ServiceLocater : IServiceLocater
@@ -256,12 +259,12 @@ public class ServiceLocater : IServiceLocater
         _container = Container.Instance;
         _container.RegisterSingleton<ILogger, MyLogger>();
         _container.RegisterSingleton<IClass1, MyClass1>();
-        _Container.RegisterSingleton<IClass2, MyClass2>();
+        _container.RegisterSingleton<IClass2, MyClass2>();
     }
 
-    public static ServiceLocater Current => _lazy.Value;
+    public static IServiceLocater Current => _lazy.Value;
 
-    public T? Get<T>(string? key = null)
+    public T? Get<T>(string? key = null) where T : class
         => _container.ResolveDependency<T>(key);
 }
 ```
@@ -296,7 +299,7 @@ public class MyClass1 : IClass1
 }
 ```
 
-### <heading>Resolving Dependencies</heading>
+### Resolving Dependencies
 We now have a reference to the <name>***ServiceLocater***</name> class. The next order of business is to resolve the dependencies in each of our
 classes by calling the ***<name>Get</name>\<<name>T</name>>*** method. For the <name>***MyClass1***</name> class this would look something like
 this:
@@ -338,17 +341,17 @@ public class MyClass2 : IClass2
 
 We don't need to do anything special for the <name>***MyLogger***</name> class since that class doesn't have any dependencies on any other class.
 
-### <heading>Allowing for Unit Testing</heading>
+### Allowing for Unit Testing
 Although the current state of this example project will work as expected, we run into some issues if we try to create unit tests for our classes.
 As it stands we are unable to substitute mock implementations of any of our dependencies. We only have a parameterless default constructor which
-will always fill in the dependencies with actual implementations of their resolving classes.
+will always fill in the dependencies with actual implementations of their resolving class types.
 
 To get around this issue, any class that has dependencies on other classes needs a second constructor. This second constructor should have a
 parameter for each dependency. We don't want to expose this constructor to the outside world, so we should make it internal rather than public.
 We can then use the <name>***InternalsVisibleTo***</name> attribute to expose this constructor to our unit test project.
 
-Once we create this second constructor we can modify the parameterless default constructor to call this constructor and pass in the resolved
-dependencies. For the <name>***MyClass1***</name> class this would look something like this:
+Once we create this second constructor we can modify the parameterless default constructor to call the internal constructor and pass in the
+resolved dependencies. For the <name>***MyClass1***</name> class this would look something like this:
 
 ```csharp
 public class MyClass1 : IClass1
@@ -360,10 +363,11 @@ public class MyClass1 : IClass1
 
     internal MyClass1(ILogger? logger)
     {
+        ArgumentNullException.ThrowIfNull(logger, nameof(logger));
         Logger = logger;
     }
 
-    private ILogger? Logger { get; }
+    private ILogger Logger { get; }
 }
 ```
 
@@ -371,7 +375,12 @@ Notice that we had to get rid of the <name>***_serviceLocater***</name> field si
 initialization. However, now our unit test project can use the internal constructor of <name>***MyClass1***</name> to pass in a mock instance
 of the <name>***ILogger***</name> dependency.
 
-## <heading>A Sample Project Using ***BasicIoC***</heading>
+Another thing to notice is that we now check for <keyword>*null*</keyword> on the argument passed into the internal constructor. The nullable
+indicator was also removed from the return type of the <name>***Logger***</name> property. If the argument passed into the internal constructor
+is <keyword>*null*</keyword> then likely the dependency was never registered. In this case we terminate our app with an
+<name>***ArguementNullException***</name> since we wouldn't want the app to continue.
+
+## A Sample Project Using ***BasicIoC***
 In this section of the document we'll layout an entire sample project that demonstrates the use of the ***BasicIoC*** class library. Here are
 some relevant details of this project:
 
@@ -392,10 +401,9 @@ some relevant details of this project:
 - The <name>***ILogger***</name>, <name>***IClass1***</name>, and <name>***IClass2***</name> interfaces all define a single method named
   ***<name>GetTrace</name>()*** which returns a list of strings that give trace information, specifically when each class is entered and exited,
   and the class that called it.
-- The solution was implemented in .NET 6 and C# 10. The ***Nullable*** option was enabled in both projects. Because of this, the *null-forgiving
-  operator* (**<keyword>!</keyword>**) had to be used in several places in the class implementations in order to avoid some nagging messages.
+- The solution was implemented in .NET 6 and C# 10 using Visual Studio 2022 Community Edition.
 
-### <heading>Making Internals Visible to the Test Project</heading>
+### Making Internals Visible to the Test Project
 The following lines must be added to the <name>***MyClassLibrary.csproj***</name> file in order to allow the <name>***MyClassLibrary.Tests***</name>
 project to access the internal constructors of the <name>***MyClass1***</name> and <name>***MyClass2***</name> classes:
 
@@ -405,7 +413,7 @@ project to access the internal constructors of the <name>***MyClass1***</name> a
   </ItemGroup>
 ```
 
-### <heading>The ***MyLogger*** Class</heading>
+### The ***MyLogger*** Class
 The <name>***ILogger***</name> interface and <name>***MyLogger***</name> class are implemented as follows:
 
 ```csharp
@@ -439,7 +447,7 @@ The <name>***MyLogger***</name> class doesn't have any dependencies on any other
 which is generated automatically by the compiler. There is no need to explicitly implement this constructor in the <name>***MyLogger***</name>
 class.
 
-### <heading>The ***MyClass1*** Class</heading>
+### The ***MyClass1*** Class
 The <name>***IClass1***</name> interface and <name>***MyClass1***</name> class are implemented as follows:
 
 ```csharp
@@ -462,7 +470,7 @@ namespace MyClassLibrary
             Logger = logger;
         }
 
-        private ILogger? Logger { get; }
+        private ILogger Logger { get; }
 
         public List<string> GetTrace(string from = "")
         {
@@ -472,7 +480,7 @@ namespace MyClassLibrary
             {
                 $"Entering MyClass1.GetTrace(){caller}"
             };
-            trace.AddRange(Logger!.GetTrace(nameof(MyClass1)));
+            trace.AddRange(Logger.GetTrace(nameof(MyClass1)));
             trace.Add("Exiting MyClass1.GetTrace()");
             return trace;
         }
@@ -493,7 +501,7 @@ default constructor calls the internal constructor after retrieving an instance 
 > **MyLogger** class without impacting any other class that is dependent upon **ILogger**. This feature is also what enables you to pass in mock
 > instances of dependent objects in your unit tests.*</notes>
 
-### <heading>The ***MyClass2*** Class</heading>
+### The ***MyClass2*** Class
 Next, the <name>***IClass2***</name> interface and <name>***MyClass2***</name> class are implemented as follows:
 
 ```csharp
@@ -521,9 +529,9 @@ namespace MyClassLibrary
             Class1 = class1;
         }
 
-        private IClass1? Class1 { get; }
+        private IClass1 Class1 { get; }
 
-        private ILogger? Logger { get; }
+        private ILogger Logger { get; }
 
         public List<string> GetTrace(string from = "")
         {
@@ -533,8 +541,8 @@ namespace MyClassLibrary
             {
                 $"Entering MyClass2.GetTrace(){caller}"
             };
-            trace.AddRange(Class1!.GetTrace(nameof(MyClass2)));
-            trace.AddRange(Logger!.GetTrace(nameof(MyClass2)));
+            trace.AddRange(Class1.GetTrace(nameof(MyClass2)));
+            trace.AddRange(Logger.GetTrace(nameof(MyClass2)));
             trace.Add("Exiting MyClass2.GetTrace()");
             return trace;
         }
@@ -548,7 +556,7 @@ type <name>***ILogger***</name> and <name>***IClass1***</name>. The correspondin
 that the parameters aren't <keyword>*null*</keyword>. As in <name>***MyClass1***</name>, the public default constructor of
 <name>***MyClass2***</name> calls the internal constructor, passing in resolved instances of the dependency objects.
 
-### <heading>The ***ServiceLocater*** Class</heading>
+### The ***ServiceLocater*** Class
 The final pieces to the <name>***MyClassLibrary***</name> project are the <name>***IServiceLocater***</name> interface and
 <name>***ServiceLocater***</name> class. These are implemented as follows:
 
@@ -577,7 +585,7 @@ namespace MyClassLibrary
             _container.RegisterSingleton<IClass2, MyClass2>();
         }
 
-        public static ServiceLocater Current => _lazy.Value;
+        public static IServiceLocater Current => _lazy.Value;
 
         public T? Get<T>(string? key = null) where T : class
             => _container.ResolveDependency<T>(key);
@@ -587,7 +595,7 @@ namespace MyClassLibrary
 
 The <name>***ServiceLocater***</name> class was described in detail earlier in this document, so we don't need to go into it any further here.
 
-### <heading>The Unit Test Project</heading>
+### The Unit Test Project
 The <name>***MyClassLibrary.Tests***</name> project is the unit test project for the <name>***MyClassLibrary***</name> project. The following
 code shows a sample unit test project using the ***xUnit*** test framework:
 
@@ -680,4 +688,4 @@ bypasses the ***BasicIoC*** class library.
 > <notes>*The sample projects described above were actually implemented and tested successfully using **Visual Studio 2022**. If something doesn't
 > work it may be due to a difference in the project properties or the IDE or compiler options.*</notes>
 
-## <heading>End of README file</heading>
+## End of README file
