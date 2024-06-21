@@ -16,14 +16,8 @@
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <PackageTags>IoC; dependency injection; DI</PackageTags>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <RepositoryUrl>https://github.com/Dave031387/BasicIoC</RepositoryUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
   
   <ItemGroup>
     <InternalsVisibleTo Include="BasicIoC.Tests" />
